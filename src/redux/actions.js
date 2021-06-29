@@ -21,3 +21,38 @@ export const moveColumn = (result) => ({
   type: MOVE_COLUMN,
   payload: result,
 });
+
+export const CHANGE_COLUMN_TITLE = 'CHANGE_COLUMN_TITLE';
+export const changeColumnTitle = (text, columnId) => ({
+  type: CHANGE_COLUMN_TITLE,
+  payload: {
+    text: text,
+    columnId: columnId,
+  },
+});
+
+export const CHANGE_TASK_TITLE = 'CHANGE_TASK_TITLE';
+export const changeTaskTitle = (text, taskId) => ({
+  type: CHANGE_TASK_TITLE,
+  payload: {
+    text: text,
+    taskId: taskId,
+  },
+});
+
+export const DELETE_TASK = 'DELETE_TASK';
+export const deleteTask = (taskId, columnId) => ({
+  type: DELETE_TASK,
+  payload: {
+    taskId: taskId,
+    columnId: columnId,
+  },
+});
+
+export const DELETE_COLUMN = 'DELETE_COLUMN';
+export const deleteColumn = (columnId) => ({
+  type: DELETE_COLUMN,
+  payload: {
+    columnId: columnId,
+  },
+});

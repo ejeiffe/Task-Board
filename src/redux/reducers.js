@@ -1,4 +1,13 @@
-import { MOVE_TASK, MOVE_COLUMN, CREATE_TASK, CREATE_COLUMN } from './actions';
+import {
+  MOVE_TASK,
+  MOVE_COLUMN,
+  CREATE_TASK,
+  CREATE_COLUMN,
+  CHANGE_COLUMN_TITLE,
+  CHANGE_TASK_TITLE,
+  DELETE_TASK,
+  DELETE_COLUMN,
+} from './actions';
 import testData from '../test-data';
 
 export const taskBoard = (state = testData, action) => {
@@ -9,7 +18,7 @@ export const taskBoard = (state = testData, action) => {
         'task-' + (Object.keys(state.tasks).length + 1).toString();
       const newTasks = {
         ...state.tasks,
-        [newTaskId]: { id: newTaskId, content: text },
+        [newTaskId]: { id: newTaskId, title: text },
       };
       const parentColumn = state.columns[parent];
       const newColumn = {
@@ -24,7 +33,6 @@ export const taskBoard = (state = testData, action) => {
           [newColumn.id]: newColumn,
         },
       };
-      console.log(newState);
 
       return newState;
     }
@@ -104,6 +112,91 @@ export const taskBoard = (state = testData, action) => {
       const newState = {
         ...state,
         columnOrder: newColumnOrder,
+      };
+
+      return newState;
+    }
+    case CHANGE_COLUMN_TITLE: {
+      const { text, columnId } = action.payload;
+      const column = state.columns[columnId];
+      const newColumn = {
+        ...column,
+        title: text,
+      };
+
+      const newState = {
+        ...state,
+        columns: {
+          ...state.columns,
+          [columnId]: newColumn,
+        },
+      };
+
+      return newState;
+    }
+    case CHANGE_TASK_TITLE: {
+      const { text, taskId } = action.payload;
+      const task = state.tasks[taskId];
+      const newTask = {
+        ...task,
+        title: text,
+      };
+
+      const newState = {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: newTask,
+        },
+      };
+
+      return newState;
+    }
+    case DELETE_TASK: {
+      const { taskId: taskToDelete, columnId } = action.payload;
+      const column = state.columns[columnId];
+      const newTasks = {
+        ...state.tasks,
+      };
+      delete newTasks[taskToDelete];
+      const newColumn = {
+        ...column,
+        taskIds: column.taskIds.filter((taskId) => taskId !== taskToDelete),
+      };
+
+      const newState = {
+        ...state,
+        tasks: newTasks,
+        columns: {
+          ...state.columns,
+          [newColumn.id]: newColumn,
+        },
+      };
+      return newState;
+    }
+    case DELETE_COLUMN: {
+      const { columnId: columnToDelete } = action.payload;
+      const tasksToDelete = state.columns[columnToDelete].taskIds;
+      const newTasks = {
+        ...state.tasks,
+      };
+      tasksToDelete.forEach((taskId) => {
+        delete newTasks[taskId];
+      });
+
+      const newColumns = {
+        ...state.columns,
+      };
+
+      delete newColumns[columnToDelete];
+
+      const newState = {
+        ...state,
+        tasks: newTasks,
+        columns: newColumns,
+        columnOrder: state.columnOrder.filter(
+          (columnId) => columnId !== columnToDelete
+        ),
       };
 
       return newState;

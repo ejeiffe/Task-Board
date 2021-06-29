@@ -1,3 +1,4 @@
+import { DELETE_COLUMN, DELETE_TASK } from '../actions';
 import { taskBoard } from '../reducers';
 
 describe('The taskBoard reducer', () => {
@@ -22,7 +23,7 @@ describe('The taskBoard reducer', () => {
     };
 
     const expected = {
-      tasks: { 'task-1': { id: 'task-1', content: 'New task' } },
+      tasks: { 'task-1': { id: 'task-1', title: 'New task' } },
       columns: {
         'column-1': {
           id: 'column-1',
@@ -48,8 +49,8 @@ describe('The taskBoard reducer', () => {
     };
     const originalState = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
       },
       columns: {
         'column-1': {
@@ -63,9 +64,9 @@ describe('The taskBoard reducer', () => {
 
     const expected = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
-        'task-3': { id: 'task-3', content: 'New task' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
+        'task-3': { id: 'task-3', title: 'New task' },
       },
       columns: {
         'column-1': {
@@ -183,9 +184,9 @@ describe('The taskBoard reducer', () => {
     };
     const originalState = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
-        'task-3': { id: 'task-3', content: 'test task 3' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
+        'task-3': { id: 'task-3', title: 'test task 3' },
       },
       columns: {
         'column-1': {
@@ -199,9 +200,9 @@ describe('The taskBoard reducer', () => {
 
     const expected = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
-        'task-3': { id: 'task-3', content: 'test task 3' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
+        'task-3': { id: 'task-3', title: 'test task 3' },
       },
       columns: {
         'column-1': {
@@ -236,9 +237,9 @@ describe('The taskBoard reducer', () => {
     };
     const originalState = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
-        'task-3': { id: 'task-3', content: 'test task 3' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
+        'task-3': { id: 'task-3', title: 'test task 3' },
       },
       columns: {
         'column-1': {
@@ -257,9 +258,9 @@ describe('The taskBoard reducer', () => {
 
     const expected = {
       tasks: {
-        'task-1': { id: 'task-1', content: 'test task 1' },
-        'task-2': { id: 'task-2', content: 'test task 2' },
-        'task-3': { id: 'task-3', content: 'test task 3' },
+        'task-1': { id: 'task-1', title: 'test task 1' },
+        'task-2': { id: 'task-2', title: 'test task 2' },
+        'task-3': { id: 'task-3', title: 'test task 3' },
       },
       columns: {
         'column-1': {
@@ -343,6 +344,174 @@ describe('The taskBoard reducer', () => {
     };
 
     const actual = taskBoard(originalState, moveColumnAction);
+
+    expect(actual).toEqual(expected);
+  });
+  it('Updates the column title when a new one is entered', () => {
+    const changeColumnTitleAction = {
+      type: 'CHANGE_COLUMN_TITLE',
+      payload: {
+        text: 'New Column Title',
+        columnId: 'column-1',
+      },
+    };
+
+    const originalState = {
+      tasks: {},
+      columns: {
+        'column-1': { id: 'column-1', title: 'Column Title', taskIds: [] },
+      },
+      columnOrder: ['column-1'],
+    };
+
+    const expected = {
+      tasks: {},
+      columns: {
+        'column-1': { id: 'column-1', title: 'New Column Title', taskIds: [] },
+      },
+      columnOrder: ['column-1'],
+    };
+
+    const actual = taskBoard(originalState, changeColumnTitleAction);
+
+    expect(actual).toEqual(expected);
+  });
+  it('Updates the task title when a new one is entered', () => {
+    const changeTaskTitleAction = {
+      type: 'CHANGE_TASK_TITLE',
+      payload: {
+        text: 'New Task Title',
+        taskId: 'task-1',
+      },
+    };
+
+    const originalState = {
+      tasks: {
+        'task-1': { id: 'task-1', title: 'Task Title' },
+      },
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          title: 'Column Title',
+          taskIds: ['task-1'],
+        },
+      },
+      columnOrder: ['column-1'],
+    };
+
+    const expected = {
+      tasks: {
+        'task-1': { id: 'task-1', title: 'New Task Title' },
+      },
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          title: 'Column Title',
+          taskIds: ['task-1'],
+        },
+      },
+      columnOrder: ['column-1'],
+    };
+
+    const actual = taskBoard(originalState, changeTaskTitleAction);
+
+    expect(actual).toEqual(expected);
+  });
+  it('Deletes the selected task', () => {
+    const deleteTaskAction = {
+      type: DELETE_TASK,
+      payload: {
+        taskId: 'task-1',
+        columnId: 'column-1',
+      },
+    };
+    const originalState = {
+      tasks: {
+        'task-1': { id: 'task-1', title: 'Task 1' },
+        'task-2': { id: 'task-2', title: 'Task 2' },
+      },
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          title: 'Column 1',
+          taskIds: ['task-1', 'task-2'],
+        },
+      },
+      columnOrder: ['column-1'],
+    };
+    const expected = {
+      tasks: {
+        'task-2': { id: 'task-2', title: 'Task 2' },
+      },
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          title: 'Column 1',
+          taskIds: ['task-2'],
+        },
+      },
+      columnOrder: ['column-1'],
+    };
+    const actual = taskBoard(originalState, deleteTaskAction);
+
+    expect(actual).toEqual(expected);
+  });
+  it('Deletes the selected empty column', () => {
+    const deleteColumnAction = {
+      type: DELETE_COLUMN,
+      payload: {
+        columnId: 'column-1',
+      },
+    };
+    const originalState = {
+      tasks: {},
+      columns: {
+        'column-1': { id: 'column-1', title: 'Column 1', taskIds: [] },
+        'column-2': { id: 'column-2', title: 'Column 2', taskIds: [] },
+      },
+      columnOrder: ['column-1', 'column-2'],
+    };
+    const expected = {
+      tasks: {},
+      columns: {
+        'column-2': { id: 'column-2', title: 'Column 2', taskIds: [] },
+      },
+      columnOrder: ['column-2'],
+    };
+    const actual = taskBoard(originalState, deleteColumnAction);
+
+    expect(actual).toEqual(expected);
+  });
+  it('Deletes the selected column and all its tasks', () => {
+    const deleteColumnAction = {
+      type: DELETE_COLUMN,
+      payload: {
+        columnId: 'column-1',
+      },
+    };
+    const originalState = {
+      tasks: {
+        'task-1': { id: 'task-1', title: 'Task 1' },
+        'task-2': { id: 'task-2', title: 'Task 2' },
+      },
+      columns: {
+        'column-1': {
+          id: 'column-1',
+          title: 'Column 1',
+          taskIds: ['task-1', 'task-2'],
+        },
+        'column-2': { id: 'column-2', title: 'Column 2', taskIds: [] },
+      },
+      columnOrder: ['column-1', 'column-2'],
+    };
+    const expected = {
+      tasks: {},
+      columns: {
+        'column-2': { id: 'column-2', title: 'Column 2', taskIds: [] },
+      },
+      columnOrder: ['column-2'],
+    };
+    const actual = taskBoard(originalState, deleteColumnAction);
 
     expect(actual).toEqual(expected);
   });

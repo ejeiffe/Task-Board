@@ -2,12 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import {
-  moveTask,
-  moveColumn,
-  createTask,
-  createColumn,
-} from '../redux/actions';
+import { moveTask, moveColumn, changeColumnTitle } from '../redux/actions';
 import Column from './Column';
 import NewItemForm from './NewItemForm';
 
@@ -24,8 +19,7 @@ const Board = ({
   data,
   handleTaskMove,
   handleColumnMove,
-  saveNewTask,
-  saveNewColumn,
+  changeColumnTitle,
 }) => {
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -67,7 +61,7 @@ const Board = ({
                     column={column}
                     index={index}
                     tasks={tasks}
-                    saveNewTask={saveNewTask}
+                    changeColumnTitle={changeColumnTitle}
                   />
                 );
               })}
@@ -75,11 +69,7 @@ const Board = ({
             </ColumnsContainer>
           )}
         </Droppable>
-        <NewItemForm
-          formType="column"
-          parent="board"
-          onSavePressed={saveNewColumn}
-        />
+        <NewItemForm formType="column" parent="board" />
       </BoardContainer>
     </DragDropContext>
   );
@@ -92,8 +82,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   handleTaskMove: (result) => dispatch(moveTask(result)),
   handleColumnMove: (result) => dispatch(moveColumn(result)),
-  saveNewTask: (text, parent) => dispatch(createTask(text, parent)),
-  saveNewColumn: (text) => dispatch(createColumn(text)),
+  changeColumnTitle: (text, columnId) =>
+    dispatch(changeColumnTitle(text, columnId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

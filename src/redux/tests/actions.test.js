@@ -7,6 +7,14 @@ import {
   CREATE_COLUMN,
   MOVE_TASK,
   MOVE_COLUMN,
+  CHANGE_COLUMN_TITLE,
+  changeColumnTitle,
+  CHANGE_TASK_TITLE,
+  changeTaskTitle,
+  DELETE_TASK,
+  deleteTask,
+  DELETE_COLUMN,
+  deleteColumn,
 } from '../actions';
 
 describe('Testing action creators', () => {
@@ -73,6 +81,60 @@ describe('Testing action creators', () => {
       payload: result,
     };
     const actual = moveColumn(result);
+
+    expect(actual).toEqual(expected);
+  });
+  it('changeColumnTitle', () => {
+    const text = 'New Column Title';
+    const columnId = 'column-1';
+    const expected = {
+      type: CHANGE_COLUMN_TITLE,
+      payload: {
+        text: text,
+        columnId: columnId,
+      },
+    };
+    const actual = changeColumnTitle(text, columnId);
+
+    expect(actual).toEqual(expected);
+  });
+  it('changeTaskTitle', () => {
+    const text = 'New Task Title';
+    const taskId = 'task-1';
+    const expected = {
+      type: CHANGE_TASK_TITLE,
+      payload: {
+        text: text,
+        taskId: taskId,
+      },
+    };
+    const actual = changeTaskTitle(text, taskId);
+
+    expect(actual).toEqual(expected);
+  });
+  it('deleteTask', () => {
+    const taskId = 'task-1';
+    const columnId = 'column-1';
+    const expected = {
+      type: DELETE_TASK,
+      payload: {
+        taskId: taskId,
+        columnId: columnId,
+      },
+    };
+    const actual = deleteTask(taskId, columnId);
+
+    expect(actual).toEqual(expected);
+  });
+  it('deleteColumn', () => {
+    const columnId = 'column-1';
+    const expected = {
+      type: DELETE_COLUMN,
+      payload: {
+        columnId: columnId,
+      },
+    };
+    const actual = deleteColumn(columnId);
 
     expect(actual).toEqual(expected);
   });

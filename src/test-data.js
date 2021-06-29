@@ -1,9 +1,9 @@
 const testData = {
   tasks: {
-    'task-1': { id: 'task-1', content: 'Write report' },
-    'task-2': { id: 'task-2', content: 'Feed the cat' },
-    'task-3': { id: 'task-3', content: 'Cook dinner' },
-    'task-4': { id: 'task-4', content: 'Wash the dishes' },
+    'task-1': { id: 'task-1', title: 'Write report' },
+    'task-2': { id: 'task-2', title: 'Feed the cat' },
+    'task-3': { id: 'task-3', title: 'Cook dinner' },
+    'task-4': { id: 'task-4', title: 'Wash the dishes' },
   },
   columns: {
     'column-1': {
