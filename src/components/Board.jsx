@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { moveTask, moveColumn, changeColumnTitle } from '../redux/actions';
+import {
+  moveTask,
+  moveColumn,
+  changeColumnTitle,
+  deleteColumn,
+} from '../redux/actions';
 import Column from './Column';
 import NewItemForm from './NewItemForm';
 
@@ -20,6 +25,7 @@ const Board = ({
   handleTaskMove,
   handleColumnMove,
   changeColumnTitle,
+  deleteColumn,
 }) => {
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -62,6 +68,7 @@ const Board = ({
                     index={index}
                     tasks={tasks}
                     changeColumnTitle={changeColumnTitle}
+                    deleteColumn={deleteColumn}
                   />
                 );
               })}
@@ -84,6 +91,7 @@ const mapDispatchToProps = (dispatch) => ({
   handleColumnMove: (result) => dispatch(moveColumn(result)),
   changeColumnTitle: (text, columnId) =>
     dispatch(changeColumnTitle(text, columnId)),
+  deleteColumn: (columnId) => dispatch(deleteColumn(columnId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

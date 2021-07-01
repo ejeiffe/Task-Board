@@ -40,6 +40,15 @@ export const changeTaskTitle = (text, taskId) => ({
   },
 });
 
+export const CHANGE_TASK_DESCRIPTION = 'CHANGE_TASK_DESCRIPTION';
+export const changeTaskDescription = (text, taskId) => ({
+  type: CHANGE_TASK_DESCRIPTION,
+  payload: {
+    text: text,
+    taskId: taskId,
+  },
+});
+
 export const DELETE_TASK = 'DELETE_TASK';
 export const deleteTask = (taskId, columnId) => ({
   type: DELETE_TASK,

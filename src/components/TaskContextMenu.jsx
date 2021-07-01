@@ -37,6 +37,8 @@ const TaskContextMenu = ({
   parent,
   display,
   setDisplay,
+  modalDisplay,
+  setModalDisplay,
   changeTaskTitle,
   deleteTask,
 }) => {
@@ -89,7 +91,14 @@ const TaskContextMenu = ({
         </ButtonsContainer>
       </TaskEditContainer>
       <ContextMenu>
-        <li>Details...</li>
+        <li
+          onClick={() => {
+            setDisplay('task');
+            setModalDisplay('show');
+          }}
+        >
+          Details...
+        </li>
         <li
           onClick={() => {
             deleteTask(task.id, parent);

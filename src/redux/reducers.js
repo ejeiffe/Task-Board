@@ -7,6 +7,7 @@ import {
   CHANGE_TASK_TITLE,
   DELETE_TASK,
   DELETE_COLUMN,
+  CHANGE_TASK_DESCRIPTION,
 } from './actions';
 import testData from '../test-data';
 
@@ -18,7 +19,7 @@ export const taskBoard = (state = testData, action) => {
         'task-' + (Object.keys(state.tasks).length + 1).toString();
       const newTasks = {
         ...state.tasks,
-        [newTaskId]: { id: newTaskId, title: text },
+        [newTaskId]: { id: newTaskId, title: text, description: '' },
       };
       const parentColumn = state.columns[parent];
       const newColumn = {
@@ -140,6 +141,24 @@ export const taskBoard = (state = testData, action) => {
       const newTask = {
         ...task,
         title: text,
+      };
+
+      const newState = {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: newTask,
+        },
+      };
+
+      return newState;
+    }
+    case CHANGE_TASK_DESCRIPTION: {
+      const { text, taskId } = action.payload;
+      const task = state.tasks[taskId];
+      const newTask = {
+        ...task,
+        description: text,
       };
 
       const newState = {

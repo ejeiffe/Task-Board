@@ -112,6 +112,20 @@ describe('Testing action creators', () => {
 
     expect(actual).toEqual(expected);
   });
+  it('changeTaskDescription', () => {
+    const text = 'New task description';
+    const taskId = 'task-1';
+    const expected = {
+      type: CHANGE_TASK_TITLE,
+      payload: {
+        text: text,
+        taskId: taskId,
+      },
+    };
+    const actual = changeTaskTitle(text, taskId);
+
+    expect(actual).toEqual(expected);
+  });
   it('deleteTask', () => {
     const taskId = 'task-1';
     const columnId = 'column-1';

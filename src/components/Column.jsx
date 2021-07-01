@@ -13,6 +13,12 @@ const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+`;
 
 const Title = styled.h3`
   padding: 8px;
@@ -23,13 +29,21 @@ const TitleEdit = styled.input`
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 
+const DeleteButton = styled.button`
+  color: darkgrey;
+  background-color: white;
+  font-size: 22px;
+  border: none;
+  cursor: pointer;
+`;
+
 const TaskList = styled.div`
   padding: 8px;
   flex-grow: 1;
   min-height: 100px;
 `;
 
-const Column = ({ column, index, tasks, changeColumnTitle }) => {
+const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
   const [title, setTitle] = useState(column.title);
   const [titleDisplay, setTitleDisplay] = useState('title');
 
@@ -62,21 +76,27 @@ const Column = ({ column, index, tasks, changeColumnTitle }) => {
     <Draggable draggableId={column.id} index={index}>
       {(provided) => (
         <ColumnContainer ref={provided.innerRef} {...provided.draggableProps}>
-          <Title
-            {...provided.dragHandleProps}
-            display={titleDisplay}
-            onClick={() => setTitleDisplay('input')}
-          >
-            {title}
-          </Title>
-          <TitleEdit
-            type="text"
-            ref={titleEditRef}
-            value={title}
-            display={titleDisplay}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => onInputEnter(e)}
-          />
+          <TitleContainer>
+            <Title
+              {...provided.dragHandleProps}
+              display={titleDisplay}
+              onClick={() => setTitleDisplay('input')}
+            >
+              {title}
+            </Title>
+            <TitleEdit
+              type="text"
+              ref={titleEditRef}
+              value={title}
+              display={titleDisplay}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => onInputEnter(e)}
+            />
+            <DeleteButton onClick={() => deleteColumn(column.id)}>
+              &times;
+            </DeleteButton>
+          </TitleContainer>
+
           <Droppable droppableId={column.id} type="task">
             {(provided) => (
               <TaskList ref={provided.innerRef} {...provided.droppableProps}>

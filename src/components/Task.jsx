@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import TaskContextMenu from './TaskContextMenu';
+import TaskModal from './TaskModal';
 
 const TaskContainer = styled.div`
   border: 1px solid lightgrey;
@@ -12,7 +13,8 @@ const TaskContainer = styled.div`
 `;
 
 const Task = ({ task, index, parent }) => {
-  const [display, setDisplay] = useState('task');
+  const [taskDisplay, setTaskDisplay] = useState('task');
+  const [modalDisplay, setModalDisplay] = useState('hide');
 
   return (
     <>
@@ -22,11 +24,12 @@ const Task = ({ task, index, parent }) => {
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            display={display}
+            display={taskDisplay}
             onContextMenu={(e) => {
               e.preventDefault();
-              setDisplay('contextMenu');
+              setTaskDisplay('contextMenu');
             }}
+            onClick={() => setModalDisplay('show')}
           >
             {task.title}
           </TaskContainer>
@@ -35,8 +38,16 @@ const Task = ({ task, index, parent }) => {
       <TaskContextMenu
         task={task}
         parent={parent}
-        display={display}
-        setDisplay={setDisplay}
+        display={taskDisplay}
+        setDisplay={setTaskDisplay}
+        modalDisplay={modalDisplay}
+        setModalDisplay={setModalDisplay}
+      />
+      <TaskModal
+        task={task}
+        parent={parent}
+        display={modalDisplay}
+        setDisplay={setModalDisplay}
       />
     </>
   );
