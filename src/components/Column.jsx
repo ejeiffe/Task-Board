@@ -1,6 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { connect } from 'react-redux';
+import { changeColumnTitle, deleteColumn } from '../redux/actions';
 import Task from './Task';
 import NewItemForm from './NewItemForm';
 
@@ -42,6 +44,12 @@ const TaskList = styled.div`
   flex-grow: 1;
   min-height: 100px;
 `;
+
+const InnerList = memo(({ tasks, parent }) => {
+  return tasks.map((task, index) => (
+    <Task key={task.id} task={task} index={index} parent={parent} />
+  ));
+});
 
 const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
   const [title, setTitle] = useState(column.title);
@@ -100,14 +108,7 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
           <Droppable droppableId={column.id} type="task">
             {(provided) => (
               <TaskList ref={provided.innerRef} {...provided.droppableProps}>
-                {tasks.map((task, index) => (
-                  <Task
-                    key={task.id}
-                    task={task}
-                    index={index}
-                    parent={column.id}
-                  />
-                ))}
+                <InnerList tasks={tasks} parent={column.id} />
                 {provided.placeholder}
               </TaskList>
             )}
@@ -119,4 +120,10 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
   );
 };
 
-export default Column;
+const mapDispatchToProps = (dispatch) => ({
+  changeColumnTitle: (text, columnId) =>
+    dispatch(changeColumnTitle(text, columnId)),
+  deleteColumn: (columnId) => dispatch(deleteColumn(columnId)),
+});
+
+export default connect(null, mapDispatchToProps)(Column);

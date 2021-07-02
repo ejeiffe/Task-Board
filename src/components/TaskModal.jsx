@@ -109,8 +109,6 @@ const TaskModal = ({
   const [titleDisplay, setTitleDisplay] = useState('title');
   const [descriptionDisplay, setDescriptionDisplay] = useState('description');
 
-  //Add refs, handlers for clicking outside of edit areas, closing modal
-
   const modalRef = useRef();
   const titleRef = useRef();
   const descriptionRef = useRef();

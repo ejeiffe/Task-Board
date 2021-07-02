@@ -5,7 +5,8 @@ import TaskContextMenu from './TaskContextMenu';
 import TaskModal from './TaskModal';
 
 const TaskContainer = styled.div`
-  border: 1px solid lightgrey;
+  border: ${(props) =>
+    props.isDragging ? '2px solid blue' : '1px solid lightgrey'};
   border-radius: 2px;
   padding 8px;
   margin-bottom: 8px;
@@ -19,12 +20,13 @@ const Task = ({ task, index, parent }) => {
   return (
     <>
       <Draggable draggableId={task.id} index={index}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <TaskContainer
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             display={taskDisplay}
+            isDragging={snapshot.isDragging}
             onContextMenu={(e) => {
               e.preventDefault();
               setTaskDisplay('contextMenu');
