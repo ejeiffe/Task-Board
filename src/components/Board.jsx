@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import { moveTask, moveColumn } from '../redux/actions';
+import { getData } from '../redux/selectors';
 import Column from './Column';
 import NewItemForm from './NewItemForm';
 
@@ -72,7 +73,7 @@ const Board = ({ data, handleTaskMove, handleColumnMove }) => {
 };
 
 const mapStateToProps = (state) => ({
-  data: state.taskBoard,
+  data: getData(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
