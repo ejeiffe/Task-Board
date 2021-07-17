@@ -32,8 +32,8 @@ app.get('/api/boards/:name', async (req, res) => {
 app.post('/api/boards', async (req, res) => {
   withDB(async (db) => {
     const { text } = req.body;
-    const name = text.toLowerCase().replace(' ', '-');
     if (text) {
+      const name = text.toLowerCase().replaceAll(' ', '-');
       const newBoard = {
         name: name,
         title: text,
@@ -124,6 +124,35 @@ app.post('/api/boards/:name/tasks', async (req, res) => {
       res.status(400).json({
         message:
           'Request body should have a text property and a parent property',
+      });
+    }
+  }, res);
+});
+
+app.put('/api/boards/:name', (req, res) => {
+  withDB(async (db) => {
+    const boardName = req.params.name;
+    const { text } = req.body;
+    if (text) {
+      const newName = text.toLowerCase().replaceAll(' ', '-');
+      const boardInfo = await db
+        .collection('boards')
+        .findOne({ name: boardName });
+      const newBoard = {
+        ...boardInfo,
+        name: newName,
+        title: text,
+      };
+      await db.collection('boards').replaceOne({ name: boardName }, newBoard);
+
+      //Return updated board
+      const updatedBoard = await db
+        .collection('boards')
+        .findOne({ name: newName });
+      res.status(200).json(updatedBoard);
+    } else {
+      res.status(400).json({
+        message: 'Request body should have an updatedBoard property',
       });
     }
   }, res);

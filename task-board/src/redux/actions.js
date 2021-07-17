@@ -1,67 +1,33 @@
-export const CREATE_TASK = 'CREATE_TASK';
-export const createTask = (text, parent) => ({
-  type: CREATE_TASK,
-  payload: { text: text, parent: parent },
+export const LOAD_BOARD_IN_PROGRESS = 'LOAD_BOARD_IN_PROGRESS';
+export const loadBoardInProgress = () => ({
+  type: LOAD_BOARD_IN_PROGRESS,
 });
 
-export const CREATE_COLUMN = 'CREATE_COLUMN';
-export const createColumn = (text) => ({
-  type: CREATE_COLUMN,
-  payload: { text: text },
+export const LOAD_BOARD_SUCCESS = 'LOAD_BOARD_SUCCESS';
+export const loadBoardSuccess = (board) => ({
+  type: LOAD_BOARD_SUCCESS,
+  payload: board,
 });
 
-export const MOVE_TASK = 'MOVE_TASK';
-export const moveTask = (result) => ({
-  type: MOVE_TASK,
-  payload: result,
+export const LOAD_BOARD_FAILURE = 'LOAD_BOARD_FAILURE';
+export const loadBoardFailure = () => ({
+  type: LOAD_BOARD_FAILURE,
 });
 
-export const MOVE_COLUMN = 'MOVE_COLUMN';
-export const moveColumn = (result) => ({
-  type: MOVE_COLUMN,
-  payload: result,
+export const UPDATE_CURRENT_BOARD = 'UPDATE_CURRENT_BOARD';
+export const updateCurrentBoard = (board) => ({
+  type: UPDATE_CURRENT_BOARD,
+  payload: board,
 });
 
-export const CHANGE_COLUMN_TITLE = 'CHANGE_COLUMN_TITLE';
-export const changeColumnTitle = (text, columnId) => ({
-  type: CHANGE_COLUMN_TITLE,
-  payload: {
-    text: text,
-    columnId: columnId,
-  },
+export const ADD_NEW_BOARD = 'ADD_NEW_BOARD';
+export const addNewBoard = (board) => ({
+  type: ADD_NEW_BOARD,
+  payload: board,
 });
 
-export const CHANGE_TASK_TITLE = 'CHANGE_TASK_TITLE';
-export const changeTaskTitle = (text, taskId) => ({
-  type: CHANGE_TASK_TITLE,
-  payload: {
-    text: text,
-    taskId: taskId,
-  },
-});
-
-export const CHANGE_TASK_DESCRIPTION = 'CHANGE_TASK_DESCRIPTION';
-export const changeTaskDescription = (text, taskId) => ({
-  type: CHANGE_TASK_DESCRIPTION,
-  payload: {
-    text: text,
-    taskId: taskId,
-  },
-});
-
-export const DELETE_TASK = 'DELETE_TASK';
-export const deleteTask = (taskId, columnId) => ({
-  type: DELETE_TASK,
-  payload: {
-    taskId: taskId,
-    columnId: columnId,
-  },
-});
-
-export const DELETE_COLUMN = 'DELETE_COLUMN';
-export const deleteColumn = (columnId) => ({
-  type: DELETE_COLUMN,
-  payload: {
-    columnId: columnId,
-  },
+export const DELETE_BOARD = 'DELETE_BOARD';
+export const deleteBoard = (board) => ({
+  type: DELETE_BOARD,
+  payload: board,
 });

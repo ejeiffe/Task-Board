@@ -1,154 +1,70 @@
 import {
-  createTask,
-  createColumn,
-  moveTask,
-  moveColumn,
-  CREATE_TASK,
-  CREATE_COLUMN,
-  MOVE_TASK,
-  MOVE_COLUMN,
-  CHANGE_COLUMN_TITLE,
-  changeColumnTitle,
-  CHANGE_TASK_TITLE,
-  changeTaskTitle,
-  DELETE_TASK,
-  deleteTask,
-  DELETE_COLUMN,
-  deleteColumn,
+  addNewBoard,
+  deleteBoard,
+  loadBoardFailure,
+  loadBoardInProgress,
+  loadBoardSuccess,
+  updateCurrentBoard,
 } from '../actions';
 
+const board = {
+  name: 'board-name',
+  title: 'Board Title',
+  tasks: {},
+  columns: {},
+  columnOrder: [],
+};
+
 describe('Testing action creators', () => {
-  it('createTask', () => {
-    const text = 'Test task';
-    const parent = 'Parent column id';
+  test('loadBoardInProgress', () => {
     const expected = {
-      type: CREATE_TASK,
-      payload: {
-        text: text,
-        parent: parent,
-      },
+      type: 'LOAD_BOARD_IN_PROGRESS',
     };
-    const actual = createTask(text, parent);
+    const actual = loadBoardInProgress();
 
     expect(actual).toEqual(expected);
   });
-  it('createColumn', () => {
-    const text = 'Test column';
+  test('loadBoardSuccess', () => {
     const expected = {
-      type: CREATE_COLUMN,
-      payload: {
-        text: text,
-      },
+      type: 'LOAD_BOARD_SUCCESS',
+      payload: board,
     };
-    const actual = createColumn(text);
+    const actual = loadBoardSuccess(board);
 
     expect(actual).toEqual(expected);
   });
-  it('moveTask', () => {
-    const result = {
-      draggableId: 'task-id',
-      source: {
-        droppableId: 'column-id-1',
-        index: 0,
-      },
-      destination: {
-        droppableId: 'column-id-2',
-        index: 1,
-      },
-    };
+  test('loadBoardFailure', () => {
     const expected = {
-      type: MOVE_TASK,
-      payload: result,
+      type: 'LOAD_BOARD_FAILURE',
     };
-    const actual = moveTask(result);
+    const actual = loadBoardFailure();
 
     expect(actual).toEqual(expected);
   });
-  it('moveColumn', () => {
-    const result = {
-      draggableId: 'column-id',
-      source: {
-        droppableId: 'board',
-        index: 0,
-      },
-      destination: {
-        droppableId: 'board',
-        index: 1,
-      },
-    };
+  test('updateCurrentBoard', () => {
     const expected = {
-      type: MOVE_COLUMN,
-      payload: result,
+      type: 'UPDATE_CURRENT_BOARD',
+      payload: board,
     };
-    const actual = moveColumn(result);
+    const actual = updateCurrentBoard(board);
 
     expect(actual).toEqual(expected);
   });
-  it('changeColumnTitle', () => {
-    const text = 'New Column Title';
-    const columnId = 'column-1';
+  test('addNewBoard', () => {
     const expected = {
-      type: CHANGE_COLUMN_TITLE,
-      payload: {
-        text: text,
-        columnId: columnId,
-      },
+      type: 'ADD_NEW_BOARD',
+      payload: board,
     };
-    const actual = changeColumnTitle(text, columnId);
+    const actual = addNewBoard(board);
 
     expect(actual).toEqual(expected);
   });
-  it('changeTaskTitle', () => {
-    const text = 'New Task Title';
-    const taskId = 'task-1';
+  test('deleteBoard', () => {
     const expected = {
-      type: CHANGE_TASK_TITLE,
-      payload: {
-        text: text,
-        taskId: taskId,
-      },
+      type: 'DELETE_BOARD',
+      payload: board,
     };
-    const actual = changeTaskTitle(text, taskId);
-
-    expect(actual).toEqual(expected);
-  });
-  it('changeTaskDescription', () => {
-    const text = 'New task description';
-    const taskId = 'task-1';
-    const expected = {
-      type: CHANGE_TASK_TITLE,
-      payload: {
-        text: text,
-        taskId: taskId,
-      },
-    };
-    const actual = changeTaskTitle(text, taskId);
-
-    expect(actual).toEqual(expected);
-  });
-  it('deleteTask', () => {
-    const taskId = 'task-1';
-    const columnId = 'column-1';
-    const expected = {
-      type: DELETE_TASK,
-      payload: {
-        taskId: taskId,
-        columnId: columnId,
-      },
-    };
-    const actual = deleteTask(taskId, columnId);
-
-    expect(actual).toEqual(expected);
-  });
-  it('deleteColumn', () => {
-    const columnId = 'column-1';
-    const expected = {
-      type: DELETE_COLUMN,
-      payload: {
-        columnId: columnId,
-      },
-    };
-    const actual = deleteColumn(columnId);
+    const actual = deleteBoard(board);
 
     expect(actual).toEqual(expected);
   });

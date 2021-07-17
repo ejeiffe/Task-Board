@@ -1,223 +1,94 @@
 import {
-  MOVE_TASK,
-  MOVE_COLUMN,
-  CREATE_TASK,
-  CREATE_COLUMN,
-  CHANGE_COLUMN_TITLE,
-  CHANGE_TASK_TITLE,
-  DELETE_TASK,
-  DELETE_COLUMN,
-  CHANGE_TASK_DESCRIPTION,
+  ADD_NEW_BOARD,
+  DELETE_BOARD,
+  LOAD_BOARD_FAILURE,
+  LOAD_BOARD_IN_PROGRESS,
+  LOAD_BOARD_SUCCESS,
+  UPDATE_CURRENT_BOARD,
 } from './actions';
-import testData from '../test-data';
 
-export const taskBoard = (state = testData, action) => {
+const initialState = { isLoading: false, currentBoard: {}, allBoards: [] };
+
+export const taskBoard = (state = initialState, action) => {
   switch (action.type) {
-    case CREATE_TASK: {
-      const { text, parent } = action.payload;
-      const newTaskId =
-        'task-' + (Object.keys(state.tasks).length + 1).toString();
-      const newTasks = {
-        ...state.tasks,
-        [newTaskId]: { id: newTaskId, title: text, description: '' },
-      };
-      const parentColumn = state.columns[parent];
-      const newColumn = {
-        ...parentColumn,
-        taskIds: parentColumn.taskIds.concat(newTaskId),
-      };
+    case LOAD_BOARD_IN_PROGRESS: {
       const newState = {
         ...state,
-        tasks: newTasks,
-        columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn,
-        },
+        isLoading: true,
       };
 
       return newState;
     }
-    case CREATE_COLUMN: {
-      const { text } = action.payload;
-      const newColumnId = 'column-' + (state.columnOrder.length + 1).toString();
-      const newColumn = {
-        id: newColumnId,
-        title: text,
-        taskIds: [],
-      };
+    case LOAD_BOARD_SUCCESS: {
+      const board = action.payload;
+
       const newState = {
         ...state,
-        columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn,
-        },
-        columnOrder: state.columnOrder.concat(newColumnId),
+        isLoading: false,
+        currentBoard: board,
       };
+
       return newState;
     }
 
-    case MOVE_TASK: {
-      const { destination, source, draggableId } = action.payload;
-      const startColumn = state.columns[source.droppableId];
-      const finishColumn = state.columns[destination.droppableId];
+    case LOAD_BOARD_FAILURE: {
+      const newState = {
+        ...state,
+        isLoading: false,
+      };
+      return newState;
+    }
+    case UPDATE_CURRENT_BOARD: {
+      const updatedBoard = action.payload;
 
-      if (startColumn === finishColumn) {
-        const newTaskIds = Array.from(startColumn.taskIds);
-        newTaskIds.splice(source.index, 1);
-        newTaskIds.splice(destination.index, 0, draggableId);
-
-        const newColumn = {
-          ...startColumn,
-          taskIds: newTaskIds,
-        };
-
+      if (updatedBoard.name !== state.currentBoard.name) {
+        const newAllBoards = Array.from(state.allBoards);
+        newAllBoards.forEach((board) => {
+          if (board.name === state.currentBoard.name) {
+            board.name = updatedBoard.name;
+            board.title = updatedBoard.title;
+          }
+        });
         const newState = {
           ...state,
-          columns: {
-            ...state.columns,
-            [newColumn.id]: newColumn,
-          },
+          currentBoard: updatedBoard,
+          allBoards: newAllBoards,
         };
         return newState;
       } else {
-        const startTaskIds = Array.from(startColumn.taskIds);
-        startTaskIds.splice(source.index, 1);
-        const newStartColumn = {
-          ...startColumn,
-          taskIds: startTaskIds,
-        };
-
-        const finishTaskIds = Array.from(finishColumn.taskIds);
-        finishTaskIds.splice(destination.index, 0, draggableId);
-        const newFinishColumn = {
-          ...finishColumn,
-          taskIds: finishTaskIds,
-        };
         const newState = {
           ...state,
-          columns: {
-            ...state.columns,
-            [startColumn.id]: newStartColumn,
-            [finishColumn.id]: newFinishColumn,
-          },
+          currentBoard: updatedBoard,
         };
+
         return newState;
       }
     }
-    case MOVE_COLUMN: {
-      const { destination, source, draggableId } = action.payload;
-      const newColumnOrder = Array.from(state.columnOrder);
-      newColumnOrder.splice(source.index, 1);
-      newColumnOrder.splice(destination.index, 0, draggableId);
+    case ADD_NEW_BOARD: {
+      const newBoard = action.payload;
+      const newBoardInfo = {
+        name: newBoard.name,
+        title: newBoard.title,
+      };
 
       const newState = {
         ...state,
-        columnOrder: newColumnOrder,
+        currentBoard: newBoard,
+        allBoards: state.allBoards.concat(newBoardInfo),
       };
 
       return newState;
     }
-    case CHANGE_COLUMN_TITLE: {
-      const { text, columnId } = action.payload;
-      const column = state.columns[columnId];
-      const newColumn = {
-        ...column,
-        title: text,
-      };
+    case DELETE_BOARD: {
+      const boardToDelete = action.payload;
 
       const newState = {
         ...state,
-        columns: {
-          ...state.columns,
-          [columnId]: newColumn,
-        },
-      };
-
-      return newState;
-    }
-    case CHANGE_TASK_TITLE: {
-      const { text, taskId } = action.payload;
-      const task = state.tasks[taskId];
-      const newTask = {
-        ...task,
-        title: text,
-      };
-
-      const newState = {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: newTask,
-        },
-      };
-
-      return newState;
-    }
-    case CHANGE_TASK_DESCRIPTION: {
-      const { text, taskId } = action.payload;
-      const task = state.tasks[taskId];
-      const newTask = {
-        ...task,
-        description: text,
-      };
-
-      const newState = {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: newTask,
-        },
-      };
-
-      return newState;
-    }
-    case DELETE_TASK: {
-      const { taskId: taskToDelete, columnId } = action.payload;
-      const column = state.columns[columnId];
-      const newTasks = {
-        ...state.tasks,
-      };
-      delete newTasks[taskToDelete];
-      const newColumn = {
-        ...column,
-        taskIds: column.taskIds.filter((taskId) => taskId !== taskToDelete),
-      };
-
-      const newState = {
-        ...state,
-        tasks: newTasks,
-        columns: {
-          ...state.columns,
-          [newColumn.id]: newColumn,
-        },
-      };
-      return newState;
-    }
-    case DELETE_COLUMN: {
-      const { columnId: columnToDelete } = action.payload;
-      const tasksToDelete = state.columns[columnToDelete].taskIds;
-      const newTasks = {
-        ...state.tasks,
-      };
-      tasksToDelete.forEach((taskId) => {
-        delete newTasks[taskId];
-      });
-
-      const newColumns = {
-        ...state.columns,
-      };
-
-      delete newColumns[columnToDelete];
-
-      const newState = {
-        ...state,
-        tasks: newTasks,
-        columns: newColumns,
-        columnOrder: state.columnOrder.filter(
-          (columnId) => columnId !== columnToDelete
+        currentBoard: {},
+        allBoards: state.allBoards.filter(
+          (board) => board.name !== boardToDelete.name
         ),
       };
-
       return newState;
     }
     default:
