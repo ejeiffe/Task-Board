@@ -33,7 +33,7 @@ app.post('/api/boards', async (req, res) => {
   withDB(async (db) => {
     const { text } = req.body;
     if (text) {
-      const name = text.toLowerCase().replaceAll(' ', '-');
+      const name = uuidv4();
       const newBoard = {
         name: name,
         title: text,
@@ -134,13 +134,11 @@ app.put('/api/boards/:name', (req, res) => {
     const boardName = req.params.name;
     const { text } = req.body;
     if (text) {
-      const newName = text.toLowerCase().replaceAll(' ', '-');
       const boardInfo = await db
         .collection('boards')
         .findOne({ name: boardName });
       const newBoard = {
         ...boardInfo,
-        name: newName,
         title: text,
       };
       await db.collection('boards').replaceOne({ name: boardName }, newBoard);
@@ -148,7 +146,7 @@ app.put('/api/boards/:name', (req, res) => {
       //Return updated board
       const updatedBoard = await db
         .collection('boards')
-        .findOne({ name: newName });
+        .findOne({ name: boardName });
       res.status(200).json(updatedBoard);
     } else {
       res.status(400).json({
