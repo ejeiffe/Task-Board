@@ -1,11 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import {
-  changeTaskDescription,
-  changeTaskTitle,
-  deleteTask,
-} from '../redux/actions';
+import { getBoardName } from '../redux/selectors';
+import { deleteTaskRequest, updateTaskRequest } from '../redux/thunks';
 
 const ModalContainer = styled.div`
   display: ${(props) => (props.display === 'show' ? 'block' : 'none')};
@@ -97,11 +94,10 @@ const DeleteButton = styled.button`
 
 const TaskModal = ({
   task,
-  parent,
+  boardName,
   display,
   setDisplay,
-  changeTaskTitle,
-  changeTaskDescription,
+  updateTask,
   deleteTask,
 }) => {
   const [title, setTitle] = useState(task.title);
@@ -167,7 +163,11 @@ const TaskModal = ({
   };
 
   const onTitleChange = () => {
-    changeTaskTitle(title, task.id);
+    const updatedTask = {
+      ...task,
+      title: title,
+    };
+    updateTask(boardName, updatedTask);
     setTitleDisplay('title');
   };
 
@@ -178,7 +178,11 @@ const TaskModal = ({
   };
 
   const onDescriptionChange = () => {
-    changeTaskDescription(description, task.id);
+    const updatedTask = {
+      ...task,
+      description: description,
+    };
+    updateTask(boardName, updatedTask);
     setDescriptionDisplay('description');
   };
 
@@ -236,7 +240,7 @@ const TaskModal = ({
         </TitleDescriptionContainer>
         <MenuContainer>
           <CloseButton onClick={() => setDisplay('hide')}>&times;</CloseButton>
-          <DeleteButton onClick={() => deleteTask(task.id, parent)}>
+          <DeleteButton onClick={() => deleteTask(boardName, task.id)}>
             Delete Task
           </DeleteButton>
         </MenuContainer>
@@ -245,11 +249,14 @@ const TaskModal = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  changeTaskTitle: (text, taskId) => dispatch(changeTaskTitle(text, taskId)),
-  changeTaskDescription: (text, taskId) =>
-    dispatch(changeTaskDescription(text, taskId)),
-  deleteTask: (taskId, parent) => dispatch(deleteTask(taskId, parent)),
+const mapStateToProps = (state) => ({
+  boardName: getBoardName(state),
 });
 
-export default connect(null, mapDispatchToProps)(TaskModal);
+const mapDispatchToProps = (dispatch) => ({
+  updateTask: (boardName, task) => dispatch(updateTaskRequest(boardName, task)),
+  deleteTask: (boardName, taskId) =>
+    dispatch(deleteTaskRequest(boardName, taskId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskModal);

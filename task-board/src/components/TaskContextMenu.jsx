@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { changeTaskTitle, deleteTask } from '../redux/actions';
+import { deleteTaskRequest, updateTaskRequest } from '../redux/thunks';
+import { getBoardName } from '../redux/selectors';
 
 const ContextMenuContainer = styled.div`
   display: ${(props) => (props.display === 'contextMenu' ? 'flex' : 'none')};
@@ -34,10 +35,9 @@ const ContextMenu = styled.ul`
 
 const TaskContextMenu = ({
   task,
-  parent,
+  boardName,
   display,
   setDisplay,
-  modalDisplay,
   setModalDisplay,
   changeTaskTitle,
   deleteTask,
@@ -69,7 +69,11 @@ const TaskContextMenu = ({
   };
 
   const changeTitle = () => {
-    changeTaskTitle(inputValue, task.id);
+    const updatedTask = {
+      ...task,
+      title: inputValue,
+    };
+    changeTaskTitle(boardName, updatedTask);
     setDisplay('task');
   };
 
@@ -101,7 +105,7 @@ const TaskContextMenu = ({
         </li>
         <li
           onClick={() => {
-            deleteTask(task.id, parent);
+            deleteTask(boardName, task.id);
           }}
         >
           Delete Task
@@ -111,9 +115,15 @@ const TaskContextMenu = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  changeTaskTitle: (text, taskId) => dispatch(changeTaskTitle(text, taskId)),
-  deleteTask: (taskId, columnId) => dispatch(deleteTask(taskId, columnId)),
+const mapStateToProps = (state) => ({
+  boardName: getBoardName(state),
 });
 
-export default connect(null, mapDispatchToProps)(TaskContextMenu);
+const mapDispatchToProps = (dispatch) => ({
+  changeTaskTitle: (boardName, task) =>
+    dispatch(updateTaskRequest(boardName, task)),
+  deleteTask: (boardName, taskId) =>
+    dispatch(deleteTaskRequest(boardName, taskId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskContextMenu);

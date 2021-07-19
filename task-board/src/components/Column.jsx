@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { changeColumnTitle, deleteColumn } from '../redux/actions';
 import Task from './Task';
 import NewItemForm from './NewItemForm';
+import { deleteColumnRequest, updateColumnRequest } from '../redux/thunks';
 
 const ColumnContainer = styled.div`
   margin: 8px;
@@ -45,13 +45,20 @@ const TaskList = styled.div`
   min-height: 100px;
 `;
 
-const InnerList = memo(({ tasks, parent }) => {
+const InnerList = memo(({ tasks }) => {
   return tasks.map((task, index) => (
-    <Task key={task.id} task={task} index={index} parent={parent} />
+    <Task key={task.id} task={task} index={index} />
   ));
 });
 
-const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
+const Column = ({
+  boardName,
+  column,
+  index,
+  tasks,
+  changeColumnTitle,
+  deleteColumn,
+}) => {
   const [title, setTitle] = useState(column.title);
   const [titleDisplay, setTitleDisplay] = useState('title');
 
@@ -64,7 +71,11 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
   };
 
   const onTitleChange = () => {
-    changeColumnTitle(title, column.id);
+    const updatedColumn = {
+      ...column,
+      title: title,
+    };
+    changeColumnTitle(boardName, updatedColumn);
     setTitleDisplay('title');
   };
 
@@ -100,7 +111,7 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => onInputEnter(e)}
             />
-            <DeleteButton onClick={() => deleteColumn(column.id)}>
+            <DeleteButton onClick={() => deleteColumn(boardName, column.id)}>
               &times;
             </DeleteButton>
           </TitleContainer>
@@ -108,12 +119,16 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
           <Droppable droppableId={column.id} type="task">
             {(provided) => (
               <TaskList ref={provided.innerRef} {...provided.droppableProps}>
-                <InnerList tasks={tasks} parent={column.id} />
+                <InnerList tasks={tasks} />
                 {provided.placeholder}
               </TaskList>
             )}
           </Droppable>
-          <NewItemForm formType="task" parent={column.id} />
+          <NewItemForm
+            boardName={boardName}
+            formType="task"
+            parent={column.id}
+          />
         </ColumnContainer>
       )}
     </Draggable>
@@ -121,9 +136,10 @@ const Column = ({ column, index, tasks, changeColumnTitle, deleteColumn }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  changeColumnTitle: (text, columnId) =>
-    dispatch(changeColumnTitle(text, columnId)),
-  deleteColumn: (columnId) => dispatch(deleteColumn(columnId)),
+  changeColumnTitle: (boardName, column) =>
+    dispatch(updateColumnRequest(boardName, column)),
+  deleteColumn: (boardName, columnId) =>
+    dispatch(deleteColumnRequest(boardName, columnId)),
 });
 
 export default connect(null, mapDispatchToProps)(Column);

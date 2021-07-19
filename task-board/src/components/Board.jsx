@@ -2,10 +2,10 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { moveTask, moveColumn } from '../redux/actions';
 import { getData } from '../redux/selectors';
 import Column from './Column';
 import NewItemForm from './NewItemForm';
+import { moveColumnRequest, moveTaskRequest } from '../redux/thunks';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -16,9 +16,17 @@ const ColumnsContainer = styled.div`
   background-color: lightgrey;
 `;
 
-const InnerList = memo(({ column, index, taskMap }) => {
+const InnerList = memo(({ boardName, column, index, taskMap }) => {
   const tasks = column.taskIds.map((taskId) => taskMap[taskId]);
-  return <Column key={column.id} column={column} index={index} tasks={tasks} />;
+  return (
+    <Column
+      key={column.id}
+      boardName={boardName}
+      column={column}
+      index={index}
+      tasks={tasks}
+    />
+  );
 });
 
 const Board = ({ data, handleTaskMove, handleColumnMove }) => {
@@ -34,10 +42,10 @@ const Board = ({ data, handleTaskMove, handleColumnMove }) => {
     }
 
     if (result.type === 'task') {
-      handleTaskMove(result);
+      handleTaskMove(data.name, result);
     }
     if (result.type === 'column') {
-      handleColumnMove(result);
+      handleColumnMove(data.name, result);
     }
   };
   return (
@@ -56,6 +64,7 @@ const Board = ({ data, handleTaskMove, handleColumnMove }) => {
                 return (
                   <InnerList
                     key={column.id}
+                    boardName={data.name}
                     column={column}
                     index={index}
                     taskMap={data.tasks}
@@ -66,7 +75,7 @@ const Board = ({ data, handleTaskMove, handleColumnMove }) => {
             </ColumnsContainer>
           )}
         </Droppable>
-        <NewItemForm formType="column" parent="board" />
+        <NewItemForm boardName={data.name} formType="column" />
       </BoardContainer>
     </DragDropContext>
   );
@@ -77,8 +86,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  handleTaskMove: (result) => dispatch(moveTask(result)),
-  handleColumnMove: (result) => dispatch(moveColumn(result)),
+  handleColumnMove: (boardName, result) =>
+    dispatch(moveColumnRequest(boardName, result)),
+  handleTaskMove: (boardName, result) =>
+    dispatch(moveTaskRequest(boardName, result)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

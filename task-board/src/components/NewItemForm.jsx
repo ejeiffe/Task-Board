@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { createTask, createColumn } from '../redux/actions';
+import {
+  createBoardRequest,
+  createColumnRequest,
+  createTaskRequest,
+} from '../redux/thunks';
 
 const NewItemButton = styled.button`
   width: 220px;
@@ -32,7 +36,14 @@ const ButtonsContainer = styled.div`
   display: flex;
 `;
 
-const NewItemForm = ({ formType, parent, saveNewTask, saveNewColumn }) => {
+const NewItemForm = ({
+  boardName,
+  formType,
+  parent = null,
+  saveNewBoard,
+  saveNewColumn,
+  saveNewTask,
+}) => {
   const [display, setDisplay] = useState('button');
   const [inputValue, setInputValue] = useState('');
 
@@ -59,9 +70,11 @@ const NewItemForm = ({ formType, parent, saveNewTask, saveNewColumn }) => {
 
   const saveNewItem = () => {
     if (inputValue) {
-      formType === 'column'
-        ? saveNewColumn(inputValue)
-        : saveNewTask(inputValue, parent);
+      formType === 'board'
+        ? saveNewBoard(inputValue)
+        : formType === 'column'
+        ? saveNewColumn(boardName, inputValue)
+        : saveNewTask(boardName, inputValue, parent);
       setInputValue('');
     }
   };
@@ -91,8 +104,11 @@ const NewItemForm = ({ formType, parent, saveNewTask, saveNewColumn }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  saveNewTask: (text, parent) => dispatch(createTask(text, parent)),
-  saveNewColumn: (text) => dispatch(createColumn(text)),
+  saveNewBoard: (text) => dispatch(createBoardRequest(text)),
+  saveNewColumn: (boardName, text) =>
+    dispatch(createColumnRequest(boardName, text)),
+  saveNewTask: (boardName, text, parent) =>
+    dispatch(createTaskRequest(boardName, text, parent)),
 });
 
 export default connect(null, mapDispatchToProps)(NewItemForm);
