@@ -1,13 +1,22 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { getData } from '../redux/selectors';
+import { getBoardLoading, getBoardName, getData } from '../redux/selectors';
 import Column from './Column';
 import NewItemForm from './NewItemForm';
-import { moveColumnRequest, moveTaskRequest } from '../redux/thunks';
+import {
+  loadCurrentBoard,
+  moveColumnRequest,
+  moveTaskRequest,
+} from '../redux/thunks';
+import BoardHeader from './BoardHeader';
 
 const BoardContainer = styled.div`
+  display: block;
+`;
+
+const BoardItemsContainer = styled.div`
   display: flex;
 `;
 
@@ -29,7 +38,20 @@ const InnerList = memo(({ boardName, column, index, taskMap }) => {
   );
 });
 
-const Board = ({ data, handleTaskMove, handleColumnMove }) => {
+const Board = ({
+  boardName,
+  data,
+  isLoading,
+  handleTaskMove,
+  handleColumnMove,
+}) => {
+  const [current, setCurrent] = useState(boardName);
+  useEffect(() => {
+    if (current) {
+      loadCurrentBoard(current);
+    }
+  }, [current]);
+
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -48,44 +70,62 @@ const Board = ({ data, handleTaskMove, handleColumnMove }) => {
       handleColumnMove(data.name, result);
     }
   };
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <BoardContainer>
-        <Droppable droppableId="board" direction="horizontal" type="column">
-          {(provided) => (
-            <ColumnsContainer
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              data={data}
-            >
-              {data.columnOrder.map((columnId, index) => {
-                const column = data.columns[columnId];
 
-                return (
-                  <InnerList
-                    key={column.id}
-                    boardName={data.name}
-                    column={column}
-                    index={index}
-                    taskMap={data.tasks}
-                  />
-                );
-              })}
-              {provided.placeholder}
-            </ColumnsContainer>
-          )}
-        </Droppable>
-        <NewItemForm boardName={data.name} formType="column" />
-      </BoardContainer>
-    </DragDropContext>
+  const boardContent = (
+    <BoardContainer>
+      <BoardHeader
+        boardName={boardName}
+        boardTitle={data.title}
+        setCurrent={setCurrent}
+      />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <BoardItemsContainer>
+          <Droppable droppableId="board" direction="horizontal" type="column">
+            {(provided) => (
+              <ColumnsContainer
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                data={data}
+              >
+                {data.columnOrder.map((columnId, index) => {
+                  const column = data.columns[columnId];
+
+                  return (
+                    <InnerList
+                      key={column.id}
+                      boardName={data.name}
+                      column={column}
+                      index={index}
+                      taskMap={data.tasks}
+                    />
+                  );
+                })}
+                {provided.placeholder}
+              </ColumnsContainer>
+            )}
+          </Droppable>
+          <NewItemForm boardName={data.name} formType="column" />
+        </BoardItemsContainer>
+      </DragDropContext>
+    </BoardContainer>
+  );
+  return isLoading ? (
+    <h3>Loading board data...</h3>
+  ) : current ? (
+    boardContent
+  ) : (
+    <NewItemForm boardName={null} formType="board" />
   );
 };
 
 const mapStateToProps = (state) => ({
   data: getData(state),
+  boardName: getBoardName(state),
+  isLoading: getBoardLoading(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  loadBoardData: (boardName) => dispatch(loadCurrentBoard(boardName)),
   handleColumnMove: (boardName, result) =>
     dispatch(moveColumnRequest(boardName, result)),
   handleTaskMove: (boardName, result) =>

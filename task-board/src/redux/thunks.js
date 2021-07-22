@@ -28,6 +28,7 @@ export const loadCurrentBoard = (boardName) => async (dispatch) => {
 export const createBoardRequest = (text) => async (dispatch) => {
   try {
     const body = JSON.stringify({ text: text });
+    console.log(body);
     const response = await fetch('http://localhost:8000/api/boards', {
       headers: {
         'Content-Type': 'application/json',
@@ -36,6 +37,7 @@ export const createBoardRequest = (text) => async (dispatch) => {
       body,
     });
     const newBoard = await response.json();
+    console.log(newBoard);
     dispatch(addNewBoard(newBoard));
   } catch (error) {
     dispatch(displayAlert(error));
@@ -214,17 +216,23 @@ export const deleteColumnRequest =
     }
   };
 
-export const deleteTaskRequest = (boardName, taskId) => async (dispatch) => {
-  try {
-    const response = await fetch(
-      `http://localhost:8000/api/boards/${boardName}/tasks/${taskId}`,
-      {
-        method: 'DELETE',
-      }
-    );
-    const updatedBoard = await response.json();
-    dispatch(updateCurrentBoard(updatedBoard));
-  } catch (error) {
-    dispatch(displayAlert(error));
-  }
-};
+export const deleteTaskRequest =
+  (boardName, taskId, parent) => async (dispatch) => {
+    try {
+      const body = JSON.stringify({ parent: parent });
+      const response = await fetch(
+        `http://localhost:8000/api/boards/${boardName}/tasks/${taskId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'DELETE',
+          body,
+        }
+      );
+      const updatedBoard = await response.json();
+      dispatch(updateCurrentBoard(updatedBoard));
+    } catch (error) {
+      dispatch(displayAlert(error));
+    }
+  };

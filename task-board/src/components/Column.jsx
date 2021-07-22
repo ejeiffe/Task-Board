@@ -45,9 +45,9 @@ const TaskList = styled.div`
   min-height: 100px;
 `;
 
-const InnerList = memo(({ tasks }) => {
+const InnerList = memo(({ tasks, parent }) => {
   return tasks.map((task, index) => (
-    <Task key={task.id} task={task} index={index} />
+    <Task key={task.id} task={task} index={index} parent={parent} />
   ));
 });
 
@@ -119,7 +119,7 @@ const Column = ({
           <Droppable droppableId={column.id} type="task">
             {(provided) => (
               <TaskList ref={provided.innerRef} {...provided.droppableProps}>
-                <InnerList tasks={tasks} />
+                <InnerList tasks={tasks} parent={column.id} />
                 {provided.placeholder}
               </TaskList>
             )}

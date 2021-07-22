@@ -35,6 +35,7 @@ const ContextMenu = styled.ul`
 
 const TaskContextMenu = ({
   task,
+  parent,
   boardName,
   display,
   setDisplay,
@@ -105,7 +106,7 @@ const TaskContextMenu = ({
         </li>
         <li
           onClick={() => {
-            deleteTask(boardName, task.id);
+            deleteTask(boardName, task.id, parent);
           }}
         >
           Delete Task
@@ -122,8 +123,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   changeTaskTitle: (boardName, task) =>
     dispatch(updateTaskRequest(boardName, task)),
-  deleteTask: (boardName, taskId) =>
-    dispatch(deleteTaskRequest(boardName, taskId)),
+  deleteTask: (boardName, taskId, parent) =>
+    dispatch(deleteTaskRequest(boardName, taskId, parent)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskContextMenu);

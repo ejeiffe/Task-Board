@@ -13,7 +13,7 @@ const TaskContainer = styled.div`
   display: ${(props) => (props.display === 'task' ? 'block' : 'none')}
 `;
 
-const Task = ({ task, index }) => {
+const Task = ({ task, index, parent }) => {
   const [taskDisplay, setTaskDisplay] = useState('task');
   const [modalDisplay, setModalDisplay] = useState('hide');
 
@@ -39,12 +39,14 @@ const Task = ({ task, index }) => {
       </Draggable>
       <TaskContextMenu
         task={task}
+        parent={parent}
         display={taskDisplay}
         setDisplay={setTaskDisplay}
         setModalDisplay={setModalDisplay}
       />
       <TaskModal
         task={task}
+        parent={parent}
         display={modalDisplay}
         setDisplay={setModalDisplay}
       />

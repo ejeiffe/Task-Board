@@ -7,7 +7,7 @@ import {
   UPDATE_CURRENT_BOARD,
 } from './actions';
 
-const initialState = { isLoading: false, currentBoard: {}, allBoards: [] };
+const initialState = { isLoading: false, currentData: {}, currentBoard: "", allBoards: [] };
 
 export const taskBoard = (state = initialState, action) => {
   switch (action.type) {
@@ -25,7 +25,8 @@ export const taskBoard = (state = initialState, action) => {
       const newState = {
         ...state,
         isLoading: false,
-        currentBoard: board,
+        currentData: board,
+        currentBoard: board.name,
       };
 
       return newState;
@@ -41,24 +42,23 @@ export const taskBoard = (state = initialState, action) => {
     case UPDATE_CURRENT_BOARD: {
       const updatedBoard = action.payload;
 
-      if (updatedBoard.name !== state.currentBoard.name) {
+      if (updatedBoard.title !== state.currentData.title) {
         const newAllBoards = Array.from(state.allBoards);
         newAllBoards.forEach((board) => {
-          if (board.name === state.currentBoard.name) {
-            board.name = updatedBoard.name;
+          if (board.name === state.currentBoard) {
             board.title = updatedBoard.title;
           }
         });
         const newState = {
           ...state,
-          currentBoard: updatedBoard,
+          currentData: updatedBoard,
           allBoards: newAllBoards,
         };
         return newState;
       } else {
         const newState = {
           ...state,
-          currentBoard: updatedBoard,
+          currentData: updatedBoard,
         };
 
         return newState;
@@ -73,7 +73,8 @@ export const taskBoard = (state = initialState, action) => {
 
       const newState = {
         ...state,
-        currentBoard: newBoard,
+        currentData: newBoard,
+        currentBoard: newBoard.name,
         allBoards: state.allBoards.concat(newBoardInfo),
       };
 
@@ -82,14 +83,24 @@ export const taskBoard = (state = initialState, action) => {
     case DELETE_BOARD: {
       const boardToDelete = action.payload;
 
-      const newState = {
-        ...state,
-        currentBoard: {},
-        allBoards: state.allBoards.filter(
-          (board) => board.name !== boardToDelete.name
-        ),
-      };
-      return newState;
+      const newAllBoards = Array.from(state.allBoards).filter((board) => board.name !== boardToDelete.name);
+
+      if (newAllBoards.length > 0) {
+        const newState = {
+          ...state,
+          currentData: {},
+          currentBoard: newAllBoards[0].name,
+          allBoards: newAllBoards,
+        };
+
+        return newState;
+
+      } else {
+        
+        return initialState;
+
+      }
+
     }
     default:
       return state;

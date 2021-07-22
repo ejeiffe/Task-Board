@@ -94,6 +94,7 @@ const DeleteButton = styled.button`
 
 const TaskModal = ({
   task,
+  parent,
   boardName,
   display,
   setDisplay,
@@ -240,7 +241,7 @@ const TaskModal = ({
         </TitleDescriptionContainer>
         <MenuContainer>
           <CloseButton onClick={() => setDisplay('hide')}>&times;</CloseButton>
-          <DeleteButton onClick={() => deleteTask(boardName, task.id)}>
+          <DeleteButton onClick={() => deleteTask(boardName, task.id, parent)}>
             Delete Task
           </DeleteButton>
         </MenuContainer>
@@ -255,8 +256,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   updateTask: (boardName, task) => dispatch(updateTaskRequest(boardName, task)),
-  deleteTask: (boardName, taskId) =>
-    dispatch(deleteTaskRequest(boardName, taskId)),
+  deleteTask: (boardName, taskId, parent) =>
+    dispatch(deleteTaskRequest(boardName, taskId, parent)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskModal);
