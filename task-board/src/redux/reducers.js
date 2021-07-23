@@ -4,10 +4,16 @@ import {
   LOAD_BOARD_FAILURE,
   LOAD_BOARD_IN_PROGRESS,
   LOAD_BOARD_SUCCESS,
+  SWITCH_CURRENT_BOARD,
   UPDATE_CURRENT_BOARD,
 } from './actions';
 
-const initialState = { isLoading: false, currentData: {}, currentBoard: "", allBoards: [] };
+const initialState = {
+  isLoading: false,
+  currentData: {},
+  currentBoard: '',
+  allBoards: [],
+};
 
 export const taskBoard = (state = initialState, action) => {
   switch (action.type) {
@@ -45,7 +51,7 @@ export const taskBoard = (state = initialState, action) => {
       if (updatedBoard.title !== state.currentData.title) {
         const newAllBoards = Array.from(state.allBoards);
         newAllBoards.forEach((board) => {
-          if (board.name === state.currentBoard) {
+          if (board.name === updatedBoard.name) {
             board.title = updatedBoard.title;
           }
         });
@@ -80,27 +86,34 @@ export const taskBoard = (state = initialState, action) => {
 
       return newState;
     }
+    case SWITCH_CURRENT_BOARD: {
+      const newCurrentBoard = action.payload;
+
+      const newState = {
+        ...state,
+        currentBoard: newCurrentBoard,
+      };
+      return newState;
+    }
+
     case DELETE_BOARD: {
       const boardToDelete = action.payload;
 
-      const newAllBoards = Array.from(state.allBoards).filter((board) => board.name !== boardToDelete.name);
+      const newAllBoards = Array.from(state.allBoards).filter(
+        (board) => board.name !== boardToDelete.name
+      );
 
       if (newAllBoards.length > 0) {
         const newState = {
           ...state,
-          currentData: {},
           currentBoard: newAllBoards[0].name,
           allBoards: newAllBoards,
         };
 
         return newState;
-
       } else {
-        
         return initialState;
-
       }
-
     }
     default:
       return state;

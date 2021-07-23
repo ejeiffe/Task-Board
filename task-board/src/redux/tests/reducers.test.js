@@ -84,14 +84,14 @@ describe('The taskBoard reducer', () => {
     const originalState = {
       isLoading: true,
       currentData: {},
-      currentBoard: "",
+      currentBoard: '',
       allBoards: [],
     };
 
     const expected = {
       isLoading: false,
       currentData: {},
-      currentBoard: "",
+      currentBoard: '',
       allBoards: [],
     };
 
@@ -157,7 +157,34 @@ describe('The taskBoard reducer', () => {
 
     expect(actual).toEqual(expected);
   });
-  test('Deletes current board and set the first board in the allBoards array as the current one', () => {
+  test('Switching the current board updates the currentBoard to the selected board name', () => {
+    const switchBoardAction = {
+      type: 'SWITCH_CURRENT_BOARD',
+      payload: newBoard.name,
+    };
+    const originalState = {
+      isLoading: false,
+      currentData: originalBoard,
+      currentBoard: originalBoard.name,
+      allBoards: [
+        { name: originalBoard.name, title: originalBoard.title },
+        { name: newBoard.name, title: newBoard.title },
+      ],
+    };
+    const expected = {
+      isLoading: false,
+      currentData: originalBoard,
+      currentBoard: newBoard.name,
+      allBoards: [
+        { name: originalBoard.name, title: originalBoard.title },
+        { name: newBoard.name, title: newBoard.title },
+      ],
+    };
+    const actual = taskBoard(originalState, switchBoardAction);
+
+    expect(actual).toEqual(expected);
+  });
+  test('Deleting the current board sets the first board in the allBoards array as the current one', () => {
     const deleteBoardAction = {
       type: 'DELETE_BOARD',
       payload: originalBoard,
@@ -173,18 +200,16 @@ describe('The taskBoard reducer', () => {
     };
     const expected = {
       isLoading: false,
-      currentData: {},
+      currentData: originalBoard,
       currentBoard: newBoard.name,
-      allBoards: [
-        { name: newBoard.name, title: newBoard.title },
-      ],
+      allBoards: [{ name: newBoard.name, title: newBoard.title }],
     };
 
     const actual = taskBoard(originalState, deleteBoardAction);
 
     expect(actual).toEqual(expected);
   });
-  test('Deletes the last board and resets state to empty', () => {
+  test('Deleting the last remaining board and resets the state to initial conditions', () => {
     const deleteBoardAction = {
       type: 'DELETE_BOARD',
       payload: originalBoard,
@@ -198,7 +223,7 @@ describe('The taskBoard reducer', () => {
     const expected = {
       isLoading: false,
       currentData: {},
-      currentBoard: "",
+      currentBoard: '',
       allBoards: [],
     };
     const actual = taskBoard(originalState, deleteBoardAction);

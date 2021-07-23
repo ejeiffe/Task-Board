@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { getAllBoards } from '../redux/selectors';
 import { deleteBoardRequest, updateBoardRequest } from '../redux/thunks';
 import NewItemForm from './NewItemForm';
+import { switchCurrentBoard } from '../redux/actions';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -44,8 +45,8 @@ const BoardHeader = ({
   boardName,
   boardTitle,
   allBoards,
-  setCurrent,
   changeBoardTitle,
+  switchBoard,
   deleteBoard,
 }) => {
   const [titleDisplay, setTitleDisplay] = useState('title');
@@ -112,16 +113,20 @@ const BoardHeader = ({
       </MenuButton>
       <ContextMenu display={menuDisplay} ref={menuRef}>
         {allBoards.map((board) => {
-          return (
-            <li
-              onClick={() => {
-                setMenuDisplay('button');
-                setCurrent(board.name);
-              }}
-            >
-              {board.title}
-            </li>
-          );
+          if (board.name !== boardName) {
+            return (
+              <li
+                onClick={() => {
+                  setMenuDisplay('button');
+                  switchBoard(board.name);
+                }}
+              >
+                {board.title}
+              </li>
+            );
+          } else {
+            return null;
+          }
         })}
         <li>
           <NewItemForm boardName={null} formType="board" />
@@ -129,14 +134,6 @@ const BoardHeader = ({
       </ContextMenu>
       <DeleteButton
         onClick={() => {
-          const remainingBoards = allBoards.filter(
-            (board) => board.name !== boardName
-          );
-          if (remainingBoards.length === 0) {
-            setCurrent('');
-          } else {
-            setCurrent(remainingBoards[0].name);
-          }
           deleteBoard(boardName);
         }}
       >
@@ -153,6 +150,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   changeBoardTitle: (boardName, text) =>
     dispatch(updateBoardRequest(boardName, text)),
+  switchBoard: (boardName) => dispatch(switchCurrentBoard(boardName)),
   deleteBoard: (boardName) => dispatch(deleteBoardRequest(boardName)),
 });
 

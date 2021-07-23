@@ -4,6 +4,7 @@ import {
   loadBoardFailure,
   loadBoardInProgress,
   loadBoardSuccess,
+  switchCurrentBoard,
   updateCurrentBoard,
 } from '../actions';
 
@@ -56,6 +57,15 @@ describe('Testing action creators', () => {
       payload: board,
     };
     const actual = addNewBoard(board);
+
+    expect(actual).toEqual(expected);
+  });
+  test('switchCurrentBoard', () => {
+    const expected = {
+      type: 'SWITCH_CURRENT_BOARD',
+      payload: board.name,
+    };
+    const actual = switchCurrentBoard(board.name);
 
     expect(actual).toEqual(expected);
   });

@@ -26,6 +26,12 @@ export const addNewBoard = (board) => ({
   payload: board,
 });
 
+export const SWITCH_CURRENT_BOARD = 'SWITCH_CURRENT_BOARD';
+export const switchCurrentBoard = (boardName) => ({
+  type: SWITCH_CURRENT_BOARD,
+  payload: boardName,
+});
+
 export const DELETE_BOARD = 'DELETE_BOARD';
 export const deleteBoard = (board) => ({
   type: DELETE_BOARD,

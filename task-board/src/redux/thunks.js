@@ -12,6 +12,9 @@ const displayAlert = (text) => () => {
 };
 
 export const loadCurrentBoard = (boardName) => async (dispatch) => {
+  if (!boardName) {
+    return;
+  }
   try {
     dispatch(loadBoardInProgress());
     const response = await fetch(
@@ -28,7 +31,6 @@ export const loadCurrentBoard = (boardName) => async (dispatch) => {
 export const createBoardRequest = (text) => async (dispatch) => {
   try {
     const body = JSON.stringify({ text: text });
-    console.log(body);
     const response = await fetch('http://localhost:8000/api/boards', {
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +39,6 @@ export const createBoardRequest = (text) => async (dispatch) => {
       body,
     });
     const newBoard = await response.json();
-    console.log(newBoard);
     dispatch(addNewBoard(newBoard));
   } catch (error) {
     dispatch(displayAlert(error));

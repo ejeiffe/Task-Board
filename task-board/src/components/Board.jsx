@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import styled from 'styled-components';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
@@ -42,15 +42,13 @@ const Board = ({
   boardName,
   data,
   isLoading,
+  loadBoardData,
   handleTaskMove,
   handleColumnMove,
 }) => {
-  const [current, setCurrent] = useState(boardName);
   useEffect(() => {
-    if (current) {
-      loadCurrentBoard(current);
-    }
-  }, [current]);
+    loadBoardData(boardName);
+  }, [loadBoardData, boardName]);
 
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -73,11 +71,7 @@ const Board = ({
 
   const boardContent = (
     <BoardContainer>
-      <BoardHeader
-        boardName={boardName}
-        boardTitle={data.title}
-        setCurrent={setCurrent}
-      />
+      <BoardHeader boardName={boardName} boardTitle={data.title} />
       <DragDropContext onDragEnd={onDragEnd}>
         <BoardItemsContainer>
           <Droppable droppableId="board" direction="horizontal" type="column">
@@ -111,7 +105,7 @@ const Board = ({
   );
   return isLoading ? (
     <h3>Loading board data...</h3>
-  ) : current ? (
+  ) : boardName ? (
     boardContent
   ) : (
     <NewItemForm boardName={null} formType="board" />
@@ -125,7 +119,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  loadBoardData: (boardName) => dispatch(loadCurrentBoard(boardName)),
+  loadBoardData: (boardName) => {
+    dispatch(loadCurrentBoard(boardName));
+  },
   handleColumnMove: (boardName, result) =>
     dispatch(moveColumnRequest(boardName, result)),
   handleTaskMove: (boardName, result) =>
