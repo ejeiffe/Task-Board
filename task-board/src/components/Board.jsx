@@ -14,6 +14,7 @@ import BoardHeader from './BoardHeader';
 
 const BoardContainer = styled.div`
   display: block;
+  background-color: #64b6ac;
 `;
 
 const BoardItemsContainer = styled.div`
@@ -22,7 +23,8 @@ const BoardItemsContainer = styled.div`
 
 const ColumnsContainer = styled.div`
   display: flex;
-  background-color: lightgrey;
+  align-items: start;
+  margin-right: 8px;
 `;
 
 const InnerList = memo(({ boardName, column, index, taskMap }) => {

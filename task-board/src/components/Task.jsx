@@ -5,12 +5,15 @@ import TaskContextMenu from './TaskContextMenu';
 import TaskModal from './TaskModal';
 
 const TaskContainer = styled.div`
-  border: ${(props) =>
-    props.isDragging ? '2px solid blue' : '1px solid lightgrey'};
-  border-radius: 2px;
-  padding 8px;
+  border: 1px solid #5d737e;
+  background-color: #fcfffd;
+  border-radius: 10px;
+  padding: 8px;
   margin-bottom: 8px;
-  display: ${(props) => (props.display === 'task' ? 'block' : 'none')}
+  display: ${(props) => (props.display === 'task' ? 'block' : 'none')};
+  &:hover {
+    background-color: #c0fdfb;
+  }
 `;
 
 const Task = ({ task, index, parent }) => {

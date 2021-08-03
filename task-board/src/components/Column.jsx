@@ -8,9 +8,9 @@ import { deleteColumnRequest, updateColumnRequest } from '../redux/thunks';
 
 const ColumnContainer = styled.div`
   margin: 8px;
-  border: 1px solid lightgrey;
-  background-color: white;
-  border-radius: 2px;
+  border: none;
+  background-color: #ebfff6;
+  border-radius: 10px;
   width: 220px;
   display: flex;
   flex-direction: column;
@@ -23,17 +23,18 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled.h3`
-  padding: 8px;
+  padding: 10px;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
 const TitleEdit = styled.input`
-  padding: 8px;
+  padding: 10px;
+  font-size: inherit;
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 
 const DeleteButton = styled.button`
   color: darkgrey;
-  background-color: white;
+  background-color: #ebfff6;
   font-size: 22px;
   border: none;
   cursor: pointer;
@@ -41,8 +42,8 @@ const DeleteButton = styled.button`
 
 const TaskList = styled.div`
   padding: 8px;
-  flex-grow: 1;
   min-height: 100px;
+  flex-grow: 1;
 `;
 
 const InnerList = memo(({ tasks, parent }) => {

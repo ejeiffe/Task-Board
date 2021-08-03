@@ -13,6 +13,7 @@ const HeaderContainer = styled.div`
 
 const BoardTitle = styled.h1`
   padding: 8px;
+  color: #fcfffd;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
 

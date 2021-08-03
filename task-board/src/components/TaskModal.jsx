@@ -21,7 +21,8 @@ const TaskInfoContainer = styled.div`
   max-width: 700px;
   margin: 5% auto;
   display: flex;
-  background-color: lightgrey;
+  background-color: #ebfff6;
+  border-radius: 10px;
   padding: 10px;
   overflow: hidden;
   justify-content: space-between;
@@ -78,8 +79,8 @@ const MenuContainer = styled.div`
 const CloseButton = styled.button`
   width: inherit;
   font-size: 40px;
-  color: darkgrey;
-  background-color: lightgrey;
+  color: #5d737e;
+  background-color: #ebfff6;
   border: none;
   text-align: right;
   display: block;
