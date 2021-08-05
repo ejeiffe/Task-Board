@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import styled from 'styled-components';
+import { TitleInput } from './ButtonsInputs';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import Task from './Task';
@@ -20,15 +21,18 @@ const TitleContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 40px;
+  padding: 5px;
 `;
 
 const Title = styled.h3`
   padding: 10px;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
-const TitleEdit = styled.input`
+const TitleEdit = styled(TitleInput)`
   padding: 10px;
-  font-size: inherit;
+  width: 80%;
+  font-size: 18px;
+  font-weight: 600;
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 

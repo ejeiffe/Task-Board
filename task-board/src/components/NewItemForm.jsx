@@ -2,6 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
+  FormContainer,
+  TitleInput,
+  SaveButton,
+  CancelButton,
+  ButtonsContainer,
+} from './ButtonsInputs';
+import {
   createBoardRequest,
   createColumnRequest,
   createTaskRequest,
@@ -13,6 +20,7 @@ const NewItemButton = styled.button`
   border: none;
   border-radius: 10px;
   margin-top: 8px;
+  color: #556973;
   background-color: #ebfff6;
   padding: 8px;
   cursor: pointer;
@@ -23,48 +31,9 @@ const NewItemButton = styled.button`
   }
 `;
 
-const FormContainer = styled.div`
-  width: 204px;
-  height: 40px;
-  border: none;
-  border-radius: 8px;
-  margin-top: 8px;
-  background-color: #ebfff6;
-  padding: 8px;
-  cursor: pointer;
-  font-size: inherit;
-  display: ${(props) => (props.display === 'form' ? 'block' : 'none')};
-`;
-
-const TitleEdit = styled.input`
-  font-size: inherit;
-  border-radius: 5px;
-  border: 1px solid #5d737e;
-`;
-
-const SaveButton = styled.button`
-  background-color: #c0fdfb;
-  border: 1px solid #5d737e;
-  border-radius: 5px;
-  font-size: inherit;
-  cursor: pointer;
-`;
-
-const CancelButton = styled.button`
-  border: none;
-  background-color: #ebfff6;
-  marign-left: 12px;
-  font-size: inherit;
-  font-weight: bold;
-  color: #5d737e;
-  cursor: pointer;
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  font-size: inherit;
-  margin-top: 2px;
-  background-color: #ebfff6;
+const NewItemFormContainer = styled(FormContainer)`
+  display: ${(props) => (props.display === 'form' ? 'inline-flex' : 'none')};
+  flex-direction: column;
 `;
 
 const NewItemForm = ({
@@ -115,21 +84,21 @@ const NewItemForm = ({
       <NewItemButton display={display} onClick={() => setDisplay('form')}>
         + Add a new {formType}
       </NewItemButton>
-      <FormContainer display={display} ref={itemFormRef}>
-        <TitleEdit
+      <NewItemFormContainer display={display} ref={itemFormRef}>
+        <TitleInput
           type="text"
           placeholder={`Enter new ${formType}`}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => onInputEnter(e)}
-        ></TitleEdit>
+        ></TitleInput>
         <ButtonsContainer>
           <SaveButton onClick={() => saveNewItem()}>Save</SaveButton>
           <CancelButton onClick={() => setDisplay('button')}>
             &times;
           </CancelButton>
         </ButtonsContainer>
-      </FormContainer>
+      </NewItemFormContainer>
     </>
   );
 };

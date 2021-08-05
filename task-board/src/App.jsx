@@ -6,12 +6,11 @@ import Board from './components/Board';
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: #64b6ac;
+    background: #619595;
   }
 `;
 
 const AppContainer = styled.div`
-  height: 100%;
   font-family: Roboto, sans-serif;
   color: #556973;
 `;

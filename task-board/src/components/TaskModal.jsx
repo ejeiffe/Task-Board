@@ -34,7 +34,7 @@ const TitleDescriptionContainer = styled.div`
   min-height: 100px;
 `;
 
-const Title = styled.h3`
+const Title = styled.h2`
   padding: 8px;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
@@ -173,12 +173,6 @@ const TaskModal = ({
     setTitleDisplay('title');
   };
 
-  const onDescriptionEnter = (e) => {
-    if (e.key === 'Enter') {
-      onDescriptionChange();
-    }
-  };
-
   const onDescriptionChange = () => {
     const updatedTask = {
       ...task,
@@ -220,13 +214,13 @@ const TaskModal = ({
               display={descriptionDisplay}
               ref={descriptionRef}
             >
-              <input
-                type="text"
+              <textarea
+                rows="10"
+                cols="40"
                 placeholder={task.description}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                onKeyDown={(e) => onDescriptionEnter(e)}
-              ></input>
+              ></textarea>
               <ButtonsContainer>
                 <SaveButton onClick={() => onDescriptionChange()}>
                   Save

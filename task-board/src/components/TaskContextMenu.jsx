@@ -1,36 +1,50 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import {
+  FormContainer,
+  TitleInput,
+  SaveButton,
+  CancelButton,
+  ButtonsContainer,
+} from './ButtonsInputs';
 import { connect } from 'react-redux';
 import { deleteTaskRequest, updateTaskRequest } from '../redux/thunks';
 import { getBoardName } from '../redux/selectors';
 
 const ContextMenuContainer = styled.div`
   display: ${(props) => (props.display === 'contextMenu' ? 'flex' : 'none')};
+  width: fit-content;
 `;
 
-const TaskEditContainer = styled.div`
+const TaskTitleEdit = styled(TitleInput)`
+  width: 186px;
+`;
+
+const TaskEditContainer = styled(FormContainer)`
   display: ${(props) => (props.display === 'contextMenu' ? 'block' : 'none')};
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-`;
-
-const SaveButton = styled.button`
-  background-color: lightblue;
-  cursor: pointer;
-`;
-const CancelButton = styled.button`
-  border: none;
-  color: darkgrey;
-  cursor: pointer;
+  padding-left: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
 `;
 
 const ContextMenu = styled.ul`
   list-style: none;
-  background-color: lightgreen;
+  border: 1px solid #5d737e;
+  border-radius: 5px;
+  background-color: #fcfffd;
+  padding 8px;
+  margin-top: 0;
   cursor: pointer;
   z-index: 1;
+`;
+
+const MenuItem = styled.li`
+  padding: 5px;
+  width: fit-content;
+  &:hover {
+    background-color: #ebfff6;
+  }
 `;
 
 const TaskContextMenu = ({
@@ -81,13 +95,13 @@ const TaskContextMenu = ({
   return (
     <ContextMenuContainer display={display} ref={taskRef}>
       <TaskEditContainer display={display}>
-        <input
+        <TaskTitleEdit
           type="text"
           placeholder={task.title}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => onInputEnter(e)}
-        ></input>
+        ></TaskTitleEdit>
         <ButtonsContainer>
           <SaveButton onClick={() => changeTitle()}>Save</SaveButton>
           <CancelButton onClick={() => setDisplay('task')}>
@@ -96,21 +110,21 @@ const TaskContextMenu = ({
         </ButtonsContainer>
       </TaskEditContainer>
       <ContextMenu>
-        <li
+        <MenuItem
           onClick={() => {
             setDisplay('task');
             setModalDisplay('show');
           }}
         >
           Details...
-        </li>
-        <li
+        </MenuItem>
+        <MenuItem
           onClick={() => {
             deleteTask(boardName, task.id, parent);
           }}
         >
-          Delete Task
-        </li>
+          Delete&nbsp;Task
+        </MenuItem>
       </ContextMenu>
     </ContextMenuContainer>
   );

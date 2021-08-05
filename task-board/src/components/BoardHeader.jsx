@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { TitleInput } from './ButtonsInputs';
 import { connect } from 'react-redux';
 import { getAllBoards } from '../redux/selectors';
 import { deleteBoardRequest, updateBoardRequest } from '../redux/thunks';
@@ -7,39 +8,80 @@ import NewItemForm from './NewItemForm';
 import { switchCurrentBoard } from '../redux/actions';
 
 const HeaderContainer = styled.div`
+  height: 95px;
   display: flex;
   padding: 8px;
+  justify-content: space-between;
+  align-items: end;
+`;
+
+const TitleContainer = styled.div`
+margin-top: auto;
+  font-size: 32px;
+  padding 10px;
+  align-items: end;
 `;
 
 const BoardTitle = styled.h1`
-  padding: 8px;
+  font-size: inherit;
+  margin: 0;
   color: #fcfffd;
+  background-color: #64b6ac;
+  border-radius: 10px;
+  padding: 10px;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
 
-const TitleEdit = styled.input`
-  padding: 8px;
+const TitleEdit = styled(TitleInput)`
+  padding: 10px;
+  font-weight: 700;
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 
-const MenuButton = styled.button`
-  background-colour: lightgreen;
+const ButtonsContainer = styled.div`
+  margin-top: auto;
+  padding: 10px;
+  font-size: 18px;
+  display: flex;
+  align-items: end;
+  position: relative;
+`;
+
+const HeaderButton = styled.button`
+  background-color: #64b6ac;
+  color: #fcfffd;
+  font-size: inherit;
   border: none;
+  border-radius: 10px;
+  padding: 8px;
   cursor: pointer;
-  display: ${(props) => (props.display === 'button' ? 'block' : 'none')};
 `;
 
 const ContextMenu = styled.ul`
+  font-size: 16px;
   list-style: none;
-  background-color: lightgreen;
+  background-color: #ebfff6;
+  border: 1px solid #5d737e;
+  border-radius: 10px;
+  padding: 10px;
   cursor: pointer;
+  position: absolute;
+  top: 40px;
   z-index: 1;
   display: ${(props) => (props.display === 'menu' ? 'block' : 'none')};
 `;
 
-const DeleteButton = styled.button`
-  background-color: lightgrey;
-  cursor: pointer;
+const MenuItem = styled.li`
+  padding: 8px;
+  width: fit-content;
+  &:hover {
+    background-color: #daffef;
+  }
+`;
+
+const ButtonsDivider = styled.span`
+  padding: 8px;
+  color: #fcfffd;
 `;
 
 const BoardHeader = ({
@@ -51,7 +93,7 @@ const BoardHeader = ({
   deleteBoard,
 }) => {
   const [titleDisplay, setTitleDisplay] = useState('title');
-  const [menuDisplay, setMenuDisplay] = useState('button');
+  const [menuDisplay, setMenuDisplay] = useState('hidden');
   const [title, setTitle] = useState(boardTitle);
 
   const titleRef = useRef();
@@ -86,7 +128,7 @@ const BoardHeader = ({
       if (menuRef.current.contains(e.target) || menuDisplay === 'button') {
         return;
       } else {
-        setMenuDisplay('button');
+        setMenuDisplay('hidden');
       }
     };
     document.addEventListener('mousedown', handleClick);
@@ -95,51 +137,56 @@ const BoardHeader = ({
 
   return (
     <HeaderContainer>
-      <BoardTitle
-        display={titleDisplay}
-        onClick={() => setTitleDisplay('input')}
-      >
-        {title}
-      </BoardTitle>
-      <TitleEdit
-        type="text"
-        ref={titleRef}
-        value={title}
-        display={titleDisplay}
-        onChange={(e) => setTitle(e.target.value)}
-        onKeyDown={(e) => onInputEnter(e)}
-      ></TitleEdit>
-      <MenuButton display={menuDisplay} onClick={() => setMenuDisplay('menu')}>
-        Change Board
-      </MenuButton>
-      <ContextMenu display={menuDisplay} ref={menuRef}>
-        {allBoards.map((board) => {
-          if (board.name !== boardName) {
-            return (
-              <li
-                onClick={() => {
-                  setMenuDisplay('button');
-                  switchBoard(board.name);
-                }}
-              >
-                {board.title}
-              </li>
-            );
-          } else {
-            return null;
-          }
-        })}
-        <li>
-          <NewItemForm boardName={null} formType="board" />
-        </li>
-      </ContextMenu>
-      <DeleteButton
-        onClick={() => {
-          deleteBoard(boardName);
-        }}
-      >
-        Delete Board
-      </DeleteButton>
+      <TitleContainer>
+        <BoardTitle
+          display={titleDisplay}
+          onClick={() => setTitleDisplay('input')}
+        >
+          {title}
+        </BoardTitle>
+        <TitleEdit
+          type="text"
+          ref={titleRef}
+          value={title}
+          display={titleDisplay}
+          onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => onInputEnter(e)}
+        ></TitleEdit>
+      </TitleContainer>
+      <ButtonsContainer>
+        <HeaderButton onClick={() => setMenuDisplay('menu')}>
+          Change Board
+        </HeaderButton>
+        <ContextMenu display={menuDisplay} ref={menuRef}>
+          {allBoards.map((board) => {
+            if (board.name !== boardName) {
+              return (
+                <MenuItem
+                  onClick={() => {
+                    setMenuDisplay('button');
+                    switchBoard(board.name);
+                  }}
+                >
+                  {board.title}
+                </MenuItem>
+              );
+            } else {
+              return null;
+            }
+          })}
+          <li>
+            <NewItemForm boardName={null} formType="board" />
+          </li>
+        </ContextMenu>
+        <ButtonsDivider>|</ButtonsDivider>
+        <HeaderButton
+          onClick={() => {
+            deleteBoard(boardName);
+          }}
+        >
+          Delete Board
+        </HeaderButton>
+      </ButtonsContainer>
     </HeaderContainer>
   );
 };

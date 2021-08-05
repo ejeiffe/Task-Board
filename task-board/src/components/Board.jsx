@@ -14,7 +14,7 @@ import BoardHeader from './BoardHeader';
 
 const BoardContainer = styled.div`
   display: block;
-  background-color: #64b6ac;
+  background-color: #619595;
 `;
 
 const BoardItemsContainer = styled.div`
