@@ -6,14 +6,14 @@ The purpose of this project was to practice building a full-stack app and to con
 
 ## Built with
 
-[React](https://github.com/facebook/react)
-[create-react-app](https://github.com/facebook/create-react-app)
-[Redux](https://github.com/reactjs/redux)
-[redux-thunk](https://github.com/reduxjs/redux-thunk)
-[styled-components](https://github.com/styled-components/styled-components)
-[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd)
-[Express](https://github.com/expressjs/express)
-[MongoDB](https://github.com/mongodb/mongo)
+- [React](https://github.com/facebook/react)
+- [create-react-app](https://github.com/facebook/create-react-app)
+- [Redux](https://github.com/reactjs/redux)
+- [redux-thunk](https://github.com/reduxjs/redux-thunk)
+- [styled-components](https://github.com/styled-components/styled-components)
+- [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd)
+- [Express](https://github.com/expressjs/express)
+- [MongoDB](https://github.com/mongodb/mongo)
 
 ## Features
 
