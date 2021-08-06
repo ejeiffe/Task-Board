@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import {
+  TitleInput,
+  SaveButton,
+  CancelButton,
+  ButtonsContainer,
+} from './ButtonsInputs';
 import { connect } from 'react-redux';
 import { getBoardName } from '../redux/selectors';
 import { deleteTaskRequest, updateTaskRequest } from '../redux/thunks';
@@ -32,20 +38,52 @@ const TitleDescriptionContainer = styled.div`
   padding: 8px;
   display: block;
   min-height: 100px;
+  flex-grow: 1;
+`;
+
+const TitleContainer = styled.div`
+  font-size: 24px;
 `;
 
 const Title = styled.h2`
+  font-size: inherit;
+  margin-top: 10px;
+  margin-bottom: 0;
   padding: 8px;
   display: ${(props) => (props.display === 'title' ? 'block' : 'none')};
 `;
-const TitleEdit = styled.input`
+const TaskTitleEdit = styled(TitleInput)`
+  font-weight: 700;
   padding: 8px;
+  margin-top: 10px;
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 
 const DescriptionContainer = styled.div`
   max-width: 500 px;
   padding: 8px;
+`;
+
+const DescriptionHeaderContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const DescriptionHeader = styled.h3`
+  margin: inherit;
+`;
+
+const DescriptionEditButton = styled.button`
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  font-size: inherit;
+  background-color: inherit;
+  cursor: pointer;
+  &:hover {
+    background-color: #daffef;
+  }
 `;
 
 const Description = styled.p`
@@ -56,18 +94,10 @@ const DescriptionEditContainer = styled.div`
   display: ${(props) => (props.display === 'input' ? 'block' : 'none')};
 `;
 
-const ButtonsContainer = styled.div`
-  display: flex;
-`;
-
-const SaveButton = styled.button`
-  background-color: lightblue;
-  cursor: pointer;
-`;
-const CancelButton = styled.button`
-  border: none;
-  color: darkgrey;
-  cursor: pointer;
+const DescriptionTextArea = styled.textarea`
+  font-size: inherit;
+  font-family: inherit;
+  width: 100%;
 `;
 
 const MenuContainer = styled.div`
@@ -77,10 +107,10 @@ const MenuContainer = styled.div`
 `;
 
 const CloseButton = styled.button`
+  background-color: inherit;
   width: inherit;
   font-size: 40px;
   color: #5d737e;
-  background-color: #ebfff6;
   border: none;
   text-align: right;
   display: block;
@@ -88,9 +118,16 @@ const CloseButton = styled.button`
 `;
 
 const DeleteButton = styled.button`
-  background-color: darkgrey;
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  font-size: inherit;
   display: block;
+  padding: 8px;
   cursor: pointer;
+  &:hover {
+    background-color: #daffef;
+  }
 `;
 
 const TaskModal = ({
@@ -186,22 +223,33 @@ const TaskModal = ({
     <ModalContainer display={display}>
       <TaskInfoContainer ref={modalRef}>
         <TitleDescriptionContainer>
-          <Title
-            display={titleDisplay}
-            onClick={() => setTitleDisplay('input')}
-          >
-            {task.title}
-          </Title>
-          <TitleEdit
-            ref={titleRef}
-            type="text"
-            value={title}
-            display={titleDisplay}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => onTitleEnter(e)}
-          ></TitleEdit>
+          <TitleContainer>
+            <Title
+              display={titleDisplay}
+              onClick={() => setTitleDisplay('input')}
+            >
+              {task.title}
+            </Title>
+            <TaskTitleEdit
+              ref={titleRef}
+              type="text"
+              value={title}
+              display={titleDisplay}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => onTitleEnter(e)}
+            ></TaskTitleEdit>
+          </TitleContainer>
+
           <DescriptionContainer>
-            <h3>Description</h3>
+            <DescriptionHeaderContainer>
+              <DescriptionHeader>Description</DescriptionHeader>
+              <DescriptionEditButton
+                onClick={() => setDescriptionDisplay('input')}
+              >
+                Edit
+              </DescriptionEditButton>
+            </DescriptionHeaderContainer>
+
             <Description
               display={descriptionDisplay}
               onClick={() => setDescriptionDisplay('input')}
@@ -214,13 +262,13 @@ const TaskModal = ({
               display={descriptionDisplay}
               ref={descriptionRef}
             >
-              <textarea
+              <DescriptionTextArea
                 rows="10"
                 cols="40"
                 placeholder={task.description}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
+              ></DescriptionTextArea>
               <ButtonsContainer>
                 <SaveButton onClick={() => onDescriptionChange()}>
                   Save

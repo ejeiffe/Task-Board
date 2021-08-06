@@ -181,7 +181,9 @@ const BoardHeader = ({
         <ButtonsDivider>|</ButtonsDivider>
         <HeaderButton
           onClick={() => {
-            deleteBoard(boardName);
+            if (window.confirm('Delete this board and all associated tasks?')) {
+              deleteBoard(boardName);
+            }
           }}
         >
           Delete Board

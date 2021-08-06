@@ -116,7 +116,15 @@ const Column = ({
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => onInputEnter(e)}
             />
-            <DeleteButton onClick={() => deleteColumn(boardName, column.id)}>
+            <DeleteButton
+              onClick={() => {
+                if (
+                  window.confirm('Delete this column and all associated tasks?')
+                ) {
+                  deleteColumn(boardName, column.id);
+                }
+              }}
+            >
               &times;
             </DeleteButton>
           </TitleContainer>
