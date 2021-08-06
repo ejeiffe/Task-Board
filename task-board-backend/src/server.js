@@ -2,10 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, '/build')));
 
 const withDB = async (operations, res) => {
   try {
@@ -390,6 +392,10 @@ app.delete('/api/boards/:name/columns/:id', (req, res) => {
       .findOne({ name: boardName });
     res.status(200).json(updatedBoard);
   }, res);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 app.listen(8000, () => console.log('Listening on port 8000'));
